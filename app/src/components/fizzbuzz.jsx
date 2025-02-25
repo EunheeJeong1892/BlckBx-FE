@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";  // useNavigate 훅 사용
 import axios from "axios";
 
 const FizzBuzz = () => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
   
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+        navigate("/login");
+        }
+    }, [navigate]);
+  
+    useEffect(() => {
+
         const fetchData = async () => {
             const token = localStorage.getItem("token");
             if (token) {
