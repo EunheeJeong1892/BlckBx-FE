@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from 'react';
+import axios from "axios";
 
 const FizzBuzz = () => {
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
   
     useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/fizzbuzz`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch data');
-          }
-          const result = await response.json();
-          setData(result);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
+        const fetchData = async () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/fizzbuzz`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    if (response.status != 200) {
+                        throw new Error('Failed to fetch data');
+                    }
+                    setData(response.data);
+                } catch (err) {
+                  setError(err.message);
+                } 
+            }
+            else {
+                throw new Error('no Token');
+            }
+        
       };
   
       fetchData();
